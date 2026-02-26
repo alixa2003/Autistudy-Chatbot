@@ -1,30 +1,30 @@
 import streamlit as st
 import base64
-
+from pathlib import Path  # Add this import
 
 def render():
-
     # ================= LOAD IMAGES =================
+    
+    # 1. Get the directory where THIS file (landing.py) is located
+    # 2. Go UP one level to reach the root, then into 'assets'
+    # Adjust '.parent' calls if your folder structure is different
+    base_path = Path(__file__).parent.parent / "assets"
 
-    with open("assets/logo.png", "rb") as f:
-        logo = base64.b64encode(f.read()).decode()
+    def get_base64_image(file_name):
+        file_path = base_path / file_name
+        with open(file_path, "rb") as f:
+            return base_64.b64encode(f.read()).decode()
 
-    with open("assets/img1.png", "rb") as f:
-        img1 = base64.b64encode(f.read()).decode()
+    # Load all images using the helper
+    logo = get_base64_image("logo.png")
+    img1 = get_base64_image("img1.png")
+    lp_img2 = get_base64_image("lp_img2.png")
+    lp_img3 = get_base64_image("lp_img3.png")
+    lp_img4 = get_base64_image("lp_img4.png")
+    lp_img5 = get_base64_image("lp_img5.png")
 
-    with open("assets/lp_img2.png", "rb") as f:
-        lp_img2 = base64.b64encode(f.read()).decode()
 
-    with open("assets/lp_img3.png", "rb") as f:
-        lp_img3 = base64.b64encode(f.read()).decode()
-
-    with open("assets/lp_img4.png", "rb") as f:
-        lp_img4 = base64.b64encode(f.read()).decode()
-
-    with open("assets/lp_img5.png", "rb") as f:
-        lp_img5 = base64.b64encode(f.read()).decode()
-
-    # ================= HTML =================
+# ================= HTML =================
 
     html = f"""
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -343,5 +343,6 @@ spoken explanations, and simple text.
 
 </div> <!-- page-wrapper -->
 """
+
 
     st.markdown(html, unsafe_allow_html=True)
