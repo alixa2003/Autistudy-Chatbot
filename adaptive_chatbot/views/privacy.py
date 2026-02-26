@@ -1,11 +1,28 @@
 import streamlit as st
 import base64
+import os
+
+
+def get_image_base64(filename):
+    """
+    Load image safely using absolute path.
+    Works locally and on Streamlit Cloud.
+    """
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    image_path = os.path.join(BASE_DIR, "assets", filename)
+
+    if not os.path.exists(image_path):
+        st.error(f"Image not found: {image_path}")
+        return ""
+
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
 
 def render():
 
-    # -------- Load Hero Image --------
-    with open("assets/about_img1.png", "rb") as f:
-        hero_img = base64.b64encode(f.read()).decode()
+    # -------- Load Hero Image (SAFE WAY) --------
+    hero_img = get_image_base64("about_img1.png")
 
     # -------- Detect Source Page --------
     src = st.query_params.get("from")
@@ -23,12 +40,9 @@ def render():
     # -------- CSS --------
     st.markdown("""
     <style>
-
     body { font-family: 'Nunito', sans-serif; }
-
     a { text-decoration:none !important; }
 
-    /* HEADER */
     .page-header {
         display:flex;
         justify-content:space-between;
@@ -62,7 +76,6 @@ def render():
 
     .separator { color:#B5C3EA; }
 
-    /* HERO */
     .page-hero {
         max-width:1100px;
         margin:40px auto 60px;
@@ -89,8 +102,6 @@ def render():
         max-width:100%;
     }
 
-    /* STREAMLIT TABS OVERRIDE */
-
     div[data-baseweb="tab-list"] {
         gap:15px;
         background:#EAF2FF;
@@ -107,25 +118,10 @@ def render():
         padding:10px 24px !important;
     }
 
-    button[data-baseweb="tab"]:hover {
-        background:#D6E4FF !important;
-    }
-
     button[data-baseweb="tab"][aria-selected="true"] {
         background:#1F3C88 !important;
         color:white !important;
     }
-
-    div[data-baseweb="tab-highlight"] {
-        background:transparent !important;
-    }
-
-    button[data-baseweb="tab"]:focus {
-        box-shadow:none !important;
-        outline:none !important;
-    }
-
-    /* SECTION CONTAINER */
 
     .section-container {
         background:#F4F7FF;
@@ -157,33 +153,12 @@ def render():
         line-height:1.7;
     }
 
-    /* ============================= */
-    /* CUSTOM CHECKBOX STYLING      */
-    /* ============================= */
-
     .checkbox-wrapper {
         margin-top:40px;
         font-size:17px;
         font-weight:400;
         color:#1FA35B;
     }
-
-    div[data-testid="stCheckbox"] > label > div:first-child {
-        background:white !important;
-        border-radius:6px !important;
-        border:2px solid #1F3C88 !important;
-    }
-
-    div[data-testid="stCheckbox"] svg {
-        fill:#1F3C88 !important;
-    }
-
-    div[data-testid="stCheckbox"] label p {
-        font-weight:400 !important;
-        font-size:17px !important;
-        color:#1FA35B !important;
-    }
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -205,7 +180,7 @@ def render():
         <div>
             <div class="page-title">Privacy Policy & Terms of Service</div>
             <div class="page-subtitle">
-            Please read our Privacy Policy and Terms carefully to understand how we collect, use, and protect your information.
+            Please read our Privacy Policy and Terms carefully.
             </div>
         </div>
         <div class="page-image">
@@ -219,72 +194,32 @@ def render():
 
     with tab1:
         st.markdown('<div class="section-container">', unsafe_allow_html=True)
-
-        questions = [
-            ("What information does the chatbot collect?",
-             "We collect basic information such as name, grade level, and email address."),
-            ("Are chat conversations stored?",
-             "Yes. Conversations are logged securely."),
-            ("Do you collect sensitive personal information?",
-             "No. We do not collect medical records."),
-            ("Is payment information collected?",
-             "No financial information is collected."),
-            ("Is technical data collected automatically?",
-             "Yes. Device type and session activity may be collected.")
-        ]
-
-        for q, a in questions:
-            st.markdown(f"""
-            <div class="privacy-card">
-            <h4>{q}</h4>
-            <p>{a}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
+        st.markdown("""
+        <div class="privacy-card">
+        <h4>What information does the chatbot collect?</h4>
+        <p>Basic information such as name, grade level, and email address.</p>
+        </div>
+        """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with tab2:
         st.markdown('<div class="section-container">', unsafe_allow_html=True)
-
-        usage_q = [
-            ("How is my data used?",
-             "Your data is used to personalize learning."),
-            ("Is my data shared?",
-             "No. Your data is never sold."),
-            ("Can I request deletion?",
-             "Yes. Users may request deletion.")
-        ]
-
-        for q, a in usage_q:
-            st.markdown(f"""
-            <div class="privacy-card">
-            <h4>{q}</h4>
-            <p>{a}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
+        st.markdown("""
+        <div class="privacy-card">
+        <h4>How is my data used?</h4>
+        <p>Your data is used only to personalize learning.</p>
+        </div>
+        """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with tab3:
         st.markdown('<div class="section-container">', unsafe_allow_html=True)
-
-        consent_q = [
-            ("Is parental consent required?",
-             "Yes. Required for children under 13."),
-            ("Can parents monitor activity?",
-             "Yes. Parents can access reports."),
-            ("What if consent is withdrawn?",
-             "The account will be deactivated.")
-        ]
-
-        for q, a in consent_q:
-            st.markdown(f"""
-            <div class="privacy-card">
-            <h4>{q}</h4>
-            <p>{a}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
+        st.markdown("""
+        <div class="privacy-card">
+        <h4>Is parental consent required?</h4>
+        <p>Yes. Required for children under 13.</p>
+        </div>
+        """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     # -------- CHECKBOX --------
