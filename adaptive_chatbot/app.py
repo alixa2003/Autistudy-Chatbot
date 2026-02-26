@@ -1,3 +1,4 @@
+from pathlib import Path
 import streamlit as st
 import base64
 
@@ -59,7 +60,15 @@ def set_background(image_path):
     )
 
 
-set_background("assets/Chatbot_background.png")
+# Get the absolute path to the directory containing this script
+script_directory = Path(__file__).parent
+
+# Join it with the assets folder and the image name
+image_path = script_directory / "assets" / "Chatbot_background.png"
+
+# Call the function with the corrected path
+set_background(image_path)
+
 
 
 # --------------------------------------------------
@@ -100,4 +109,5 @@ elif st.session_state.page == "login":
     login_page()
 
 else:
+
     landing_page()
