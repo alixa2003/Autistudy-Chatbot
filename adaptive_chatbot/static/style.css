@@ -1,0 +1,24 @@
+/* Full height */
+html, body, .stApp {
+    height: 100%;
+}
+
+/* Background image */
+.stApp {
+    background: url("static/assets/Chatbot_background.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Remove white containers */
+.main {
+    background: transparent !important;
+}
+
+.block-container {
+    background: transparent !important;
+}
+
+/* Hide Streamlit sidebar */
+section[data-testid="stSidebar"] {
+    display: none;
+}
