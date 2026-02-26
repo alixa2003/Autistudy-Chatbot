@@ -1,21 +1,23 @@
 import streamlit as st
 import base64
-from pathlib import Path  # Add this import
+from pathlib import Path
 
 def render():
     # ================= LOAD IMAGES =================
     
     # 1. Get the directory where THIS file (landing.py) is located
     # 2. Go UP one level to reach the root, then into 'assets'
-    # Adjust '.parent' calls if your folder structure is different
+    # .parent gets 'views/', .parent.parent gets the root '/'
     base_path = Path(__file__).parent.parent / "assets"
 
     def get_base64_image(file_name):
         file_path = base_path / file_name
         with open(file_path, "rb") as f:
-            return base_64.b64encode(f.read()).decode()
+            # FIX: Changed base_64 to base64 to match the import above
+            return base64.b64encode(f.read()).decode()
 
     # Load all images using the helper
+    # Ensure these filenames match your GitHub files EXACTLY (case-sensitive)
     logo = get_base64_image("logo.png")
     img1 = get_base64_image("img1.png")
     lp_img2 = get_base64_image("lp_img2.png")
@@ -23,8 +25,7 @@ def render():
     lp_img4 = get_base64_image("lp_img4.png")
     lp_img5 = get_base64_image("lp_img5.png")
 
-
-# ================= HTML =================
+    # ================= HTML =================
 
     html = f"""
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -343,6 +344,5 @@ spoken explanations, and simple text.
 
 </div> <!-- page-wrapper -->
 """
-
 
     st.markdown(html, unsafe_allow_html=True)
