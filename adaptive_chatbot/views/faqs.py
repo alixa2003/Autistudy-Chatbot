@@ -1,25 +1,14 @@
-import streamlit as st
+ import streamlit as st
 import base64
-from pathlib import Path  # Added import
 
 def render():
 
-    # -------- Load Images with Correct Path --------
-    # 1. Get the directory of THIS file (views/faqs.py)
-    # 2. Go UP one level to the root, then into 'assets'
-    base_path = Path(__file__).parent.parent / "assets"
+    # -------- Load Images --------
+    with open("assets/about_img1.png", "rb") as f:
+        hero_img = base64.b64encode(f.read()).decode()
 
-    def get_encoded_img(img_name):
-        img_path = base_path / img_name
-        try:
-            with open(img_path, "rb") as f:
-                # Use 'base64' to match standard import
-                return base64.b64encode(f.read()).decode()
-        except FileNotFoundError:
-            return "" # Fallback to prevent crash
-
-    hero_img = get_encoded_img("about_img1.png")
-    bg_img = get_encoded_img("faqs_img1.png")
+    with open("assets/faqs_img1.png", "rb") as f:
+        bg_img = base64.b64encode(f.read()).decode()
 
     # -------- Detect Source Page --------
     src = st.query_params.get("from")
@@ -35,7 +24,38 @@ def render():
         back_link = "/?page=landing"
 
     # -------- FAQ DATA --------
-    faqs =
+    faqs = [
+        ("1️⃣ What is this AI chatbot for?",
+         "This AI chatbot is designed to help autistic students in Grades 4–7 understand school subjects more easily."),
+        ("2️⃣ How does the chatbot answer questions?",
+         "It uses Retrieval-Augmented Generation (RAG), searching approved textbooks before generating answers."),
+        ("3️⃣ What subjects are supported?",
+         "Mathematics, Science (Biology, Physics, Chemistry), and Computer Studies."),
+        ("4️⃣ Is the chatbot safe for children?",
+         "Yes. It filters harmful content and only uses trusted material."),
+        ("5️⃣ Does it replace teachers?",
+         "No. It supports learning but does not replace teachers or professionals."),
+        ("6️⃣ How does personalization work?",
+         "It remembers grade level, preferences, and progress."),
+        ("7️⃣ Can parents monitor progress?",
+         "Yes. Learning summaries and reports are available."),
+        ("8️⃣ How are difficult topics handled?",
+         "It breaks them into smaller steps and provides examples."),
+        ("9️⃣ What technology powers it?",
+         "AI, NLP, RAG, vector search, and text-to-speech."),
+        ("🔟 Does it store personal data?",
+         "Only necessary learning data is stored securely."),
+        ("1️⃣1️⃣ Can it work on mobile?",
+         "Yes. It runs on laptops, tablets, and phones."),
+        ("1️⃣2️⃣ What if it doesn't understand?",
+         "It asks the student to clarify or rephrase."),
+        ("1️⃣3️⃣ Can it remember progress?",
+         "Yes. It saves session memory."),
+        ("1️⃣4️⃣ Does it require internet?",
+         "Yes. Real-time AI requires internet connection."),
+        ("1️⃣5️⃣ What if I face technical problems?",
+         "Refresh or check your connection. Contact support if needed.")
+    ]
 
     # -------- Session Control --------
     if "faq_visible" not in st.session_state:
