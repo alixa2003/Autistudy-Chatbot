@@ -1,11 +1,23 @@
 import streamlit as st
 import base64
+from pathlib import Path  # Added import
 
 def render():
 
-    # -------- Load About Image --------
-    with open("assets/about_img1.png", "rb") as f:
-        about_img = base64.b64encode(f.read()).decode()
+    # -------- Load About Image with Correct Path --------
+    # 1. Get the directory of THIS file (views/about.py)
+    # 2. Go UP one level to the root, then into 'assets'
+    base_path = Path(__file__).parent.parent / "assets"
+    image_path = base_path / "about_img1.png"
+
+    try:
+        with open(image_path, "rb") as f:
+            # Note: Changed to 'base64' (no underscore) to match standard import
+            about_img = base64.b64encode(f.read()).decode()
+    except FileNotFoundError:
+        # Fallback if image is still missing to prevent the whole app from crashing
+        about_img = ""
+        st.error(f"Image not found at {image_path}. Please check your GitHub repository.")
 
     # -------- Detect Source Page --------
     src = st.query_params.get("from")
