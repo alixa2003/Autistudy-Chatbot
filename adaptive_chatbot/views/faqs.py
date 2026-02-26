@@ -1,14 +1,29 @@
 import streamlit as st
 import base64
+import os
+
+
+def get_image_base64(filename):
+    """
+    Safely load image from assets folder using absolute path.
+    Works locally and on Streamlit Cloud.
+    """
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    image_path = os.path.join(BASE_DIR, "assets", filename)
+
+    if not os.path.exists(image_path):
+        st.error(f"Image not found: {image_path}")
+        return ""
+
+    with open(image_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
 
 def render():
 
-    # -------- Load Images --------
-    with open("assets/about_img1.png", "rb") as f:
-        hero_img = base64.b64encode(f.read()).decode()
-
-    with open("assets/faqs_img1.png", "rb") as f:
-        bg_img = base64.b64encode(f.read()).decode()
+    # -------- Load Images (SAFE WAY) --------
+    hero_img = get_image_base64("about_img1.png")
+    bg_img = get_image_base64("faqs_img1.png")
 
     # -------- Detect Source Page --------
     src = st.query_params.get("from")
@@ -66,16 +81,9 @@ def render():
     # -------- Styling --------
     st.markdown("""
     <style>
+    body { font-family: 'Nunito', sans-serif; }
+    a { text-decoration:none !important; }
 
-    body {
-        font-family: 'Nunito', sans-serif;
-    }
-
-    a {
-        text-decoration:none !important;
-    }
-
-    /* HEADER */
     .page-header {
         display:flex;
         justify-content:space-between;
@@ -107,11 +115,8 @@ def render():
         color:#5A78C8;
     }
 
-    .separator {
-        color:#B5C3EA;
-    }
+    .separator { color:#B5C3EA; }
 
-    /* HERO */
     .page-hero {
         max-width:1100px;
         margin:40px auto 0;
@@ -138,7 +143,6 @@ def render():
         max-width:100%;
     }
 
-    /* FAQ SECTION */
     .faq-section {
         max-width:900px;
         margin:80px auto;
@@ -164,7 +168,6 @@ def render():
         box-shadow:0 4px 10px rgba(0,0,0,0.04);
     }
 
-    /* Blue Button */
     div.stButton > button {
         background:#1F3C88;
         color:white;
@@ -178,7 +181,6 @@ def render():
         background:#16306E;
         color:white;
     }
-
     </style>
     """, unsafe_allow_html=True)
 
